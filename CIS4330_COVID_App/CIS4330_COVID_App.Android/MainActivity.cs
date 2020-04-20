@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Text;
 using MongoDB.Bson.IO;
 using System.Threading.Tasks;
+using static Android.Provider.SyncStateContract;
 
 namespace CIS4330_COVID_App.Droid
 {
@@ -30,33 +31,10 @@ namespace CIS4330_COVID_App.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
 
-            Task.Run(async () => {
-                try
-                {
-                    await PosttoAPI();
-                }
-                catch (System.OperationCanceledException ex)
-                {
-                    Console.WriteLine($"Text load cancelled: {ex.Message}");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            });
+            
         }
 
-        private async Task<string> PosttoAPI()
-        {
-            var client = new HttpClient();
-            var content = new StringContent("test");
-            var result = await client.PostAsync("localhost:8080", content).ConfigureAwait(false);
-            if (result.IsSuccessStatusCode)
-            {
-                var tokenJson = await result.Content.ReadAsStringAsync();
-            }
-            return "test";
-        }
+       
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
         {
