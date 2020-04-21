@@ -7,8 +7,8 @@ namespace CIS4330_COVID_App.Models
 {
     public class MyLocation
     {
-        public double Latitude { get; set; }
+        public double lat { get; set; }
 
-        public double Longitude { get; set; }
+        public double lng { get; set; }
     }
 }

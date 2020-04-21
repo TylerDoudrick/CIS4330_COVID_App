@@ -102,12 +102,12 @@ namespace CIS4330_COVID_App.Views
             {
                 await Database.DeleteAll();
 
-                myLocation.Latitude = geolocation.Latitude;
-                myLocation.Longitude = geolocation.Longitude;
+                myLocation.lat = geolocation.Latitude;
+                myLocation.lng = geolocation.Longitude;
 
                 await Database.SaveMyLocationAsync(myLocation);
 
-                lblHomeLocation = ($"Home Location Updated! Latitude: {myLocation.Latitude}, Longitude: {myLocation.Longitude}");
+                lblHomeLocation = ($"Home Location Updated! Latitude: {myLocation.lat}, Longitude: {myLocation.lng}");
             }
         }
 
@@ -116,8 +116,8 @@ namespace CIS4330_COVID_App.Views
             MyLocation CurrentLocation = new MyLocation();
             MyLocation HomeLocation = new MyLocation();
 
-            CurrentLocation.Latitude = 39.9897171;
-            CurrentLocation.Longitude = -75.1924763;
+            CurrentLocation.lat = 39.9897171;
+            CurrentLocation.lng = -75.1924763;
 
 
             HomeLocation = await CheckHomeSet();
@@ -136,8 +136,8 @@ namespace CIS4330_COVID_App.Views
 
             if (geolocation != null)
             {
-                myLocation.Latitude = geolocation.Latitude;
-                myLocation.Longitude = geolocation.Longitude;
+                myLocation.lat = geolocation.Latitude;
+                myLocation.lng = geolocation.Longitude;
                 await Database.SaveMyLocationAsync(myLocation);
                 return myLocation;
 
@@ -162,8 +162,8 @@ namespace CIS4330_COVID_App.Views
 
                     if (geolocation != null)
                     {
-                        myLocation.Latitude = geolocation.Latitude;
-                        myLocation.Longitude = geolocation.Longitude;
+                        myLocation.lat = geolocation.Latitude;
+                        myLocation.lng = geolocation.Longitude;
                         await Database.SaveMyLocationAsync(myLocation);
                         return myLocation;
 
@@ -185,10 +185,10 @@ namespace CIS4330_COVID_App.Views
 
         async public Task CheckIfHome(MyLocation HomeLocation, MyLocation CurrentLocation)
         {
-            Location Home = new Location(HomeLocation.Latitude, HomeLocation.Longitude);
-            Location Current = new Location(CurrentLocation.Latitude, CurrentLocation.Longitude);
-            lblHomeLocation = ($"Home: Latitude: {HomeLocation.Latitude}, Longitude: {HomeLocation.Longitude}");
-            lblCurrentLocation = ($"Current Location: Latitude: {CurrentLocation.Latitude}, Longitude: {CurrentLocation.Longitude}");
+            Location Home = new Location(HomeLocation.lat, HomeLocation.lng);
+            Location Current = new Location(CurrentLocation.lat, CurrentLocation.lng);
+            lblHomeLocation = ($"Home: Latitude: {HomeLocation.lat}, Longitude: {HomeLocation.lng}");
+            lblCurrentLocation = ($"Current Location: Latitude: {CurrentLocation.lat}, Longitude: {CurrentLocation.lng}");
 
             double meters = 1000 * Location.CalculateDistance(Home, Current, DistanceUnits.Kilometers);
             lblDistance = "Distance From Home: " + Math.Round(meters).ToString();
