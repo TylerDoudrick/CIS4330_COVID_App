@@ -1,0 +1,117 @@
+<html>
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+  </script>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="heatmap.min.js"></script>
+  <script src="leaflet-heatmap.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+
+  <%
+        //Parse the data points retrieved from the database
+        var dataPoints = [];
+        data.forEach(function(obj){
+            var dataPoint = new Object();
+            dataPoint.lat = obj.lat;
+            dataPoint.lng = obj.lng;
+            dataPoints.push(dataPoint); 
+        });
+        %>
+
+  <script>
+    $(document).ready(function () {
+
+      //Grab the string json from the server
+      var data = <%- JSON.stringify(dataPoints) %>;
+
+      var dataPoints = {
+        max: 8,
+        data: data
+      };
+
+      var cfg = {
+        "radius": 0.005,
+        "maxOpacity": .8,
+        "minOpacity": .1,
+        "scaleRadius": true,
+        blur: .75,
+        "useLocalExtrema": false,
+        gradient: {
+          '.1': 'blue',
+          '.2': 'yellow',
+          '.4': 'red'
+        },
+        latField: 'lat',
+        lngField: 'lng'
+      };
+
+      //Build layer from openstreetmap
+      var baseLayer = L.tileLayer(
+        'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          maxZoom: 18,
+          id: 'mapbox/streets-v11',
+          tileSize: 512,
+          zoomOffset: -1,
+          accessToken: 'pk.eyJ1IjoidHlsZXJkb3VkcmljayIsImEiOiJjazlhMXowb2gwZDV0M2dtb2VxeDE3dDM3In0.iLYbFRp7VrC4vJJTPbIa1Q'
+        });
+
+      //Build heatmap from the datapoints
+      var heatmapLayer = new HeatmapOverlay(cfg);
+      heatmapLayer.setData(dataPoints);
+
+      var mymap = L.map('mapid', {
+        layers: [baseLayer, heatmapLayer]
+      }).setView([39.9521, -75.1506], 13);
+
+
+      //Socket to update the data on the fly from the server when new locations are added
+
+      //Does not work
+      var socket = io();
+      socket.on('newData', function (dataPoint) {
+
+        heatmapLayer.addData(dataPoint);
+        //.repaint();
+      });
+    });
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #mapid {
+      height: 94%;
+      width: 100%;
+      bottom: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">CIS4330 Covid Project</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </nav>
+
+  <!-- Container for map -->
+  <div id="mapid"></div>
+</body>
+
+</html>
