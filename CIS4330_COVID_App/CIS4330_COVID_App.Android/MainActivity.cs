@@ -30,8 +30,6 @@ namespace CIS4330_COVID_App.Droid
             base.OnCreate(savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
-
-            
         }
 
        

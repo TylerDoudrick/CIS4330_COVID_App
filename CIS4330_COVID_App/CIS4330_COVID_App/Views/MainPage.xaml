@@ -4,6 +4,8 @@
              x:Class="CIS4330_COVID_App.Views.MainPage">
     <ContentPage.Content>
         <StackLayout>
+            
+            <!--Simple stack layout the contains the 3 labels and 2 buttons we used-->
             <Label Text="{Binding lblCurrentLocation}"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
